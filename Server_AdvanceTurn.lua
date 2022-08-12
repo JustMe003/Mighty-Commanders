@@ -18,20 +18,20 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 			--Four cases: 
 			--1.-No commanders involved - No effect 
 			--2.-Commanders in both sides - No effect
-			--3.- Commander in atacking army only - A fraction of the surviving defending troops flee, a fraction of atacking casualties are replenished
+			--3.- Commander in attacking army only - A fraction of the surviving defending troops flee, a fraction of attacking casualties are replenished
 			if(tablelength(result.ActualArmies.SpecialUnits)>0 and tablelength(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.SpecialUnits)==0 )then 
-				--If atack is succesfull only casualties are replenished
+				--If attack is succesfull only casualties are replenished
 				if(result.IsSuccessful)then
 					local NameFrom=game.ServerGame.Game.Players[FromOwner].DisplayName(nil, false);
 					--Casualties are replenished
 					local effect = WL.TerritoryModification.Create(to);
 					local newarmies = result.ActualArmies.NumArmies-RR*result.AttackingArmiesKilled .NumArmies;
 					effect.SetArmiesTo = newarmies;
-					addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals injured atacking armies", {}, {effect}),true);
+					addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals injured attacking armies", {}, {effect}),true);
 				--Otherwise enemies flee and casualties are replenished
 				else
 					--If commander died there is no effect
-					if(tablelength(result.AtackingArmiesKilled.SpecialUnits)>0)then
+					if(tablelength(result.AttackingArmiesKilled.SpecialUnits)>0)then
 					else
 						local NameFrom=game.ServerGame.Game.Players[FromOwner].DisplayName(nil, false);
 						--Enemies flee
@@ -47,12 +47,12 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 					end
 				end
 			end
-			--3.- Commander in defending army only - A fraction of the surviving atacking troops flee, a fraction of defending casualties are replenished
+			--3.- Commander in defending army only - A fraction of the surviving attacking troops flee, a fraction of defending casualties are replenished
 			if(tablelength(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.SpecialUnits)>0 and tablelength(result.ActualArmies.SpecialUnits)==0 )then 
-				--If atack is succesful game is over
+				--If attack is succesful game is over
 				if(result.IsSuccessful)then
 				else
-					--If atack fails defending armies are replenished and atacking enemies flee
+					--If attack fails defending armies are replenished and attacking enemies flee
 					--Enemies flee
 					local NameTo=game.ServerGame.Game.Players[ToOwner].DisplayName(nil, false);
 					local effect = WL.TerritoryModification.Create(from);
@@ -61,7 +61,7 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 						newarmies=0;
 					end
 					effect.SetArmiesTo = newarmies;
-					addNewOrder(WL.GameOrderEvent.Create(FromOwner, "Atacking survivors flee in fear of "..NameTo, {}, {effect}),true);
+					addNewOrder(WL.GameOrderEvent.Create(FromOwner, "Attacking survivors flee in fear of "..NameTo, {}, {effect}),true);
 					--Casualties are replenished
 					local effect = WL.TerritoryModification.Create(to);
 					local newarmies = game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies*RR;
