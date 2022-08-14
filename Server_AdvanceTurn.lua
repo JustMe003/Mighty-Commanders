@@ -75,18 +75,16 @@ end
 
 
 function Server_AdvanceTurn_End(game, addNewOrder)
+	local CA=Mod.Settings.CreateArmies;
 	--Loop through all territories to see if there is a commander
 	for _, Territory in pairs(game.ServerGame.LatestTurnStanding.Territories) do
 		if(tablelength(Territory.NumArmies.SpecialUnits)>0)then
-			for i = 1, tablelength(Territory.NumArmies.SpecialUnits) do
-				local CA=Mod.Settings.CreateArmies;
-				local Owner=Territory.OwnerPlayerID;
-				local OwnerName=game.ServerGame.Game.Players[Owner].DisplayName(nil, false);
-				local effect = WL.TerritoryModification.Create(Territory.ID);
-				local newarmies = game.ServerGame.LatestTurnStanding.Territories[Territory.ID].NumArmies.NumArmies+CA;
-				effect.SetArmiesTo = newarmies;
-				addNewOrder(WL.GameOrderEvent.Create(Owner, "New recruits join the army of "..OwnerName, {}, {effect}),true);
-			end
+			local Owner=Territory.OwnerPlayerID;
+			local OwnerName=game.ServerGame.Game.Players[Owner].DisplayName(nil, false);
+			local effect = WL.TerritoryModification.Create(Territory.ID);
+			local newarmies = game.ServerGame.LatestTurnStanding.Territories[Territory.ID].NumArmies.NumArmies+CA*tablelength(Territory.NumArmies.SpecialUnits);
+			effect.SetArmiesTo = newarmies;
+			addNewOrder(WL.GameOrderEvent.Create(Owner, "New recruits join the army of "..OwnerName, {}, {effect}),true);
 		end
 	end
 end
