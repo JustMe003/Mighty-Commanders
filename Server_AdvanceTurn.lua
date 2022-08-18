@@ -63,13 +63,15 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 					if (newarmies<0)then
 						newarmies=0;
 					end
+					local EffectSize=(1-FR)*(result.ActualArmies.NumArmies-result.AttackingArmiesKilled.NumArmies);
 					effect.SetArmiesTo = newarmies;
-					addNewOrder(WL.GameOrderEvent.Create(FromOwner, "Attacking survivors flee in fear of "..NameTo, {}, {effect}),true);
+					addNewOrder(WL.GameOrderEvent.Create(FromOwner, EffectSize .. " attacking survivors flee in fear of "..NameTo, {}, {effect}),true);
 					--Casualties are replenished
 					local effect = WL.TerritoryModification.Create(to);
 					local newarmies = game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies*RR;
 					effect.SetArmiesTo = newarmies;
-					addNewOrder(WL.GameOrderEvent.Create(ToOwner, NameTo.." heals injured defending armies", {}, {effect}),true);				
+					local EffectSize=result.DefendingArmiesKilled.NumArmies*(1-RR);
+					addNewOrder(WL.GameOrderEvent.Create(ToOwner, NameTo.." heals " .. EffectSize .. " injured defending armies", {}, {effect}),true);				
 				end			
 			end
 		end
