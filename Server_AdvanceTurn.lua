@@ -26,8 +26,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 					--Casualties are replenished
 					local effect = WL.TerritoryModification.Create(to);
 					local newarmies = result.ActualArmies.NumArmies-RR*result.AttackingArmiesKilled .NumArmies;
+					local EffectSize=(1-RR)*result.AttackingArmiesKilled .NumArmies;
 					effect.SetArmiesTo = newarmies;
-					addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals injured attacking armies", {}, {effect}),true);
+					addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals " .. EffectSize .. " injured attacking armies", {}, {effect}),true);
 				--Otherwise enemies flee and casualties are replenished
 				else
 					--If commander died there is no effect
@@ -38,12 +39,14 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 						local effect = WL.TerritoryModification.Create(to);
 						local newarmies = FR*(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies);
 						effect.SetArmiesTo = newarmies;
-						addNewOrder(WL.GameOrderEvent.Create(ToOwner, "Defending survivors flee in fear of "..NameFrom, {}, {effect}),true);
+						local EffectSize=(1-FR)*(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies);
+						addNewOrder(WL.GameOrderEvent.Create(ToOwner, EffectSize .. " defending survivors flee in fear of "..NameFrom, {}, {effect}),true);
 						--Casualties are replenished
 						local effect = WL.TerritoryModification.Create(from);
 						local newarmies = game.ServerGame.LatestTurnStanding.Territories[from].NumArmies.NumArmies-RR*result.AttackingArmiesKilled.NumArmies;
+						local EffectSize=(1-RR)*result.AttackingArmiesKilled .NumArmies;
 						effect.SetArmiesTo = newarmies;
-						addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals injured atacking armies", {}, {effect}),true);
+						addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals " .. EffectSize .. " injured atacking armies", {}, {effect}),true);
 					end
 				end
 			end
