@@ -87,9 +87,9 @@ function Server_AdvanceTurn_End(game, addNewOrder)
 			local Owner=Territory.OwnerPlayerID;
 			local OwnerName=game.ServerGame.Game.Players[Owner].DisplayName(nil, false);
 			local effect = WL.TerritoryModification.Create(Territory.ID);
-			local newarmies = game.ServerGame.LatestTurnStanding.Territories[Territory.ID].NumArmies.NumArmies+CA*tablelength(Territory.NumArmies.SpecialUnits);
-			effect.SetArmiesTo = newarmies;
-			addNewOrder(WL.GameOrderEvent.Create(Owner, "New recruits join the army of "..OwnerName, {}, {effect}),true);
+			local newarmies = CA*tablelength(Territory.NumArmies.SpecialUnits);
+			effect.AddArmies  = newarmies;
+			addNewOrder(WL.GameOrderEvent.Create(Owner, newarmies .. " recruits join the army of "..OwnerName, {}, {effect}),true);
 		end
 	end
 end
