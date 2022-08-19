@@ -89,18 +89,18 @@ end
 function Server_AdvanceTurn_End(game, addNewOrder)
 	if(Mod.Settings.CreateArmies>0)then
 		local CA=Mod.Settings.CreateArmies;
-	--Loop through all territories to see if there is a commander
-	for _, Territory in pairs(game.ServerGame.LatestTurnStanding.Territories) do
-		if(tablelength(Territory.NumArmies.SpecialUnits)>0)then
-			local Owner=Territory.OwnerPlayerID;
-			local TerritoryName=game.Map.Territories[Territory.ID].Name;
-			local OwnerName=game.ServerGame.Game.Players[Owner].DisplayName(nil, false);
-			local effect = WL.TerritoryModification.Create(Territory.ID);
-			local newarmies = CA*tablelength(Territory.NumArmies.SpecialUnits);
-			effect.AddArmies  = newarmies;
-			addNewOrder(WL.GameOrderEvent.Create(Owner, newarmies .. " recruits join the army of "..OwnerName.. " in ".. TerritoryName , {}, {effect}),true);
+		--Loop through all territories to see if there is a commander
+		for _, Territory in pairs(game.ServerGame.LatestTurnStanding.Territories) do
+			if(tablelength(Territory.NumArmies.SpecialUnits)>0)then
+				local Owner=Territory.OwnerPlayerID;
+				local TerritoryName=game.Map.Territories[Territory.ID].Name;
+				local OwnerName=game.ServerGame.Game.Players[Owner].DisplayName(nil, false);
+				local effect = WL.TerritoryModification.Create(Territory.ID);
+				local newarmies = CA*tablelength(Territory.NumArmies.SpecialUnits);
+				effect.AddArmies  = newarmies;
+				addNewOrder(WL.GameOrderEvent.Create(Owner, newarmies .. " recruits join the army of "..OwnerName.. " in ".. TerritoryName , {}, {effect}),true);
+			end
 		end
-	end
 	end
 	
 end
