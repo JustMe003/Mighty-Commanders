@@ -26,9 +26,8 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 					--Casualties are replenished
 					if(Mod.Settings.ReplenishmentRate>0)then
 						local effect = WL.TerritoryModification.Create(to);
-						local newarmies = result.ActualArmies.NumArmies-RR*result.AttackingArmiesKilled .NumArmies;
-						local EffectSize=(1-RR)*result.AttackingArmiesKilled .NumArmies;
-						effect.SetArmiesTo = newarmies;
+						local EffectSize=round((1-RR)*result.AttackingArmiesKilled .NumArmies);
+						effect.AddArmies =EffectSize;
 						addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals " .. EffectSize .. " injured attacking armies", {}, {effect}),true);
 					end
 				--Otherwise enemies flee and casualties are replenished
@@ -40,17 +39,15 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 						--Enemies flee
 						if(Mod.Settings.FleeRate>0)then
 							local effect = WL.TerritoryModification.Create(to);
-							local newarmies = FR*(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies);
-							effect.SetArmiesTo = newarmies;
-							local EffectSize=(1-FR)*(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies);
+							local EffectSize=round((1-FR)*(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies));
+							effect.AddArmies =-EffectSize;
 							addNewOrder(WL.GameOrderEvent.Create(ToOwner, EffectSize .. " defending survivors flee in fear of "..NameFrom, {}, {effect}),true);
 						end
 						--Casualties are replenished
 						if(Mod.Settings.ReplenishmentRate>0)then
 							local effect = WL.TerritoryModification.Create(from);
-							local newarmies = game.ServerGame.LatestTurnStanding.Territories[from].NumArmies.NumArmies-RR*result.AttackingArmiesKilled.NumArmies;
-							local EffectSize=(1-RR)*result.AttackingArmiesKilled .NumArmies;
-							effect.SetArmiesTo = newarmies;
+							local EffectSize=round((1-RR)*result.AttackingArmiesKilled .NumArmies);
+							effect.AddArmies =EffectSize;
 							addNewOrder(WL.GameOrderEvent.Create(FromOwner, NameFrom.." heals " .. EffectSize .. " injured atacking armies", {}, {effect}),true);
 						end
 					end
@@ -63,23 +60,23 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 				else
 					--If attack fails defending armies are replenished and attacking enemies flee
 					--Enemies flee
+					local NameTo=game.ServerGame.Game.Players[ToOwner].DisplayName(nil, false);
 					if(Mod.Settings.FleeRate>0)then
-						local NameTo=game.ServerGame.Game.Players[ToOwner].DisplayName(nil, false);
 						local effect = WL.TerritoryModification.Create(from);
 						local newarmies = game.ServerGame.LatestTurnStanding.Territories[from].NumArmies.NumArmies-result.AttackingArmiesKilled.NumArmies-(1-FR)*(result.ActualArmies.NumArmies-result.AttackingArmiesKilled.NumArmies);
+						local EffectSize=round((1-FR)*(result.ActualArmies.NumArmies-result.AttackingArmiesKilled.NumArmies));
 						if (newarmies<0)then
-							newarmies=0;
+							EffectSize=0;
 						end
-						local EffectSize=(1-FR)*(result.ActualArmies.NumArmies-result.AttackingArmiesKilled.NumArmies);
-						effect.SetArmiesTo = newarmies;
+						effect.AddArmies =-round(EffectSize);
 						addNewOrder(WL.GameOrderEvent.Create(FromOwner, EffectSize .. " attacking survivors flee in fear of "..NameTo, {}, {effect}),true);
 					end
 					--Casualties are replenished
 					if(Mod.Settings.ReplenishmentRate>0)then
 						local effect = WL.TerritoryModification.Create(to);
 						local newarmies = game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.NumArmies-result.DefendingArmiesKilled.NumArmies*RR;
-						effect.SetArmiesTo = newarmies;
-						local EffectSize=result.DefendingArmiesKilled.NumArmies*(1-RR);
+						local EffectSize=round(result.DefendingArmiesKilled.NumArmies*(1-RR));
+						effect.AddArmies =EffectSize;
 						addNewOrder(WL.GameOrderEvent.Create(ToOwner, NameTo.." heals " .. EffectSize .. " injured defending armies", {}, {effect}),true);				
 					end
 				end			
@@ -114,3 +111,6 @@ function tablelength(T)
 	return count;
 end
 
+function round(num)
+	return math.floor(num + 0.5)
+end
