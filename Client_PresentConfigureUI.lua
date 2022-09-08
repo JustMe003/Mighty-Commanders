@@ -18,9 +18,6 @@ function Client_PresentConfigureUI(rootParent)
 	
 	textColor = "#DDDDDD";
 	grayedOutColor = "#CCCCCC";
-		
-	UI.CreateLabel(vert).SetText("This mod makes commanders do three things: 1.- Commanders will spawn armies at the end of each round (this way the AI is better at predicting defending armies). 2.-Whenever a commander is part of a defending or attacking army a percentage of casualties will be replenished. 3.-Whenever a commander is part of a defending or attacking army a percentage of the surviving enemy armies will flee (die for practical purposes). Note: This effect only applies to armies that were actually involved in the fight and not to all armies in the attacking territory. Note 2: The replenishment and flee effects happen after the fight is resolved, if the commander does not survive the fight the player looses the game.").SetColor(textColor)
-	UI.CreateEmpty(vert).SetPreferredHeight(20);
 
 	UI.CreateLabel(vert).SetText("Number of armies commanders create").SetColor(textColor);
 	CreateArmiesInput = UI.CreateNumberInputField(vert).SetSliderMinValue(0).SetSliderMaxValue(100).SetValue(CreateArmies);
