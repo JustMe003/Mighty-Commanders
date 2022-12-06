@@ -1,8 +1,13 @@
+function Server_AdvanceTurn_Start(game, addNewOrder)
+	--Rates
+	
+	-- Made the rates global so it is more efficient
+	RR=1-Mod.Settings.ReplenishmentRate/100;
+	FR=1-Mod.Settings.FleeRate/100;
+end
+
 
 function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrder)
-	--Rates
-	local RR=1-Mod.Settings.ReplenishmentRate/100;
-	local FR=1-Mod.Settings.FleeRate/100;
 	--Through attack, armies are lost, so we need to take a look at this case
 	if(order.proxyType == 'GameOrderAttackTransfer') then 
 		-- returns the territory id, the attack/transfer comes from
