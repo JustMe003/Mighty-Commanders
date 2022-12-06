@@ -54,7 +54,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 				end
 			end
 			--3.- Commander in defending army only - A fraction of the surviving attacking troops flee, a fraction of defending casualties are replenished
-			if(tablelength(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.SpecialUnits)>0 and tablelength(result.ActualArmies.SpecialUnits)==0 )then 
+			
+			-- Added 'game.ServerGame.LatestTurnStanding.Territories[to].OwnerPlayerID ~= WL.PlayerID.Neutral' for a bug fix
+			if(game.ServerGame.LatestTurnStanding.Territories[to].OwnerPlayerID ~= WL.PlayerID.Neutral and tablelength(game.ServerGame.LatestTurnStanding.Territories[to].NumArmies.SpecialUnits)>0 and tablelength(result.ActualArmies.SpecialUnits)==0 )then 
 				--If attack is succesful game is over
 				if(result.IsSuccessful)then
 				else
@@ -116,4 +118,15 @@ end
 
 function round(num)
 	return math.floor(num + 0.5)
+end
+
+-- Give this function an 'Armies' object (like order.ActualArmies or game.ServerGame.LatestTurnStanding.Territories[#ID].NumArmies)
+function getNumOfCommanders(armies)
+	local c = 0;
+	for _, sp in pairs(armies) do
+		if sp.proxyType == "Commander" then
+			c = c + 1;
+		end
+	end
+	return c;
 end
